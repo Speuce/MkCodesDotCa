@@ -33,8 +33,29 @@ loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/f
   ready();
 });
 
+const loader2 = new FBXLoader();
+const shipMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
+loader2.load("./models/ROCKET.fbx", model => {
+      model.traverse((child) => {
+        if(child.isMesh){
+          child.material = shipMaterial;
+        }
+      });
+      const scale = global.constrainingDimension/60;
+      model.scale.x = scale;
+      model.scale.z = scale;
+      model.scale.y = scale;
+      model.position.z = 70;
+      model.position.y = global.constrainingDimension*0.13;
+      model.position.x = global.xdistance*0.8;
+      spaceship = model;
+      scene.add(model);
+      console.log("--- loaded ----");
+  });
+
 let object1;
 let object2;
+let spaceship;
 let sceneNum = 0;
 function onScroll(){
 
@@ -55,7 +76,11 @@ function onScroll(){
       sceneNum = 3;
       scrollScene3();
     }else{
-      endScene3();
+      if(sceneNum == 3){
+        endScene3();
+      }
+      sceneNum = 4;
+      scrollScene4();
     }
   }
   console.log(window.scrollY);
@@ -107,7 +132,16 @@ function scrollScene3(){
 function endScene3(){
   camera.position.x = global.xdistance;
   camera.position.z = 70;
-  camera.rotation.y = Math.PI/2;`                     `
+  camera.rotation.y = Math.PI/2;
+  camera.rotation.x = -Math.PI/2;
+  camera.rotation.z = Math.PI/2;
+  console.log('3:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+}
+
+function scrollScene4(){
+  console.log('4:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  //camera.rotateX(-1/50);
+  camera.rotation.y = (Math.PI/2)-(window.scrollY-2978)/500;
 }
 
 function generateBinaryFloatingText(number, zoffset, zspread){
@@ -146,7 +180,6 @@ function get3DTextGeometry(text, size, width){
 function ready(){
   console.log("ready");
   const textMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
-  const shipMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
   object1 = generate3DText('MK', 10, textMaterial);
   object2 = generate3DText('Software Developer', 3, textMaterial);
 
@@ -155,25 +188,6 @@ function ready(){
   object1.position.y = 9;
   object1.material.transparent = true;
   object2.material.transparent = true;
-
-  const loader2 = new FBXLoader();
-  loader2.load("./models/ROCKET.fbx", model => {
-        model.traverse((child) => {
-          if(child.isMesh){
-            child.material = shipMaterial;
-          }
-        });
-        const scale = global.constrainingDimension/60;
-        model.scale.x = scale;
-        model.scale.z = scale;
-        model.scale.y = scale;
-        model.position.z = 70;
-        model.position.y = global.constrainingDimension*0.13;
-        model.position.x = global.xdistance*0.8;
-
-        scene.add(model);
-        console.log("--- loaded ----");
-    });
 
   scene.add(object1);
   scene.add(object2);
@@ -193,7 +207,10 @@ function animate(){
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   //object1.rotation.z += 2;
-
+  if(sceneNum >= 3 && spaceship){
+    spaceship.rotation.y += 0.01;
+    //spaceship.rotation.z += 0.01;
+  }
   if(frames == 20){
     const secs = (Date.now()-start)/1000;
     lastFps = 20/secs;
