@@ -3,13 +3,17 @@ import './style.css'
 import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import _ from 'lodash';
+import { Vector3 } from 'three';
 
-const vw = window.innerWidth/5;
-const vh = window.innerHeight/5;
+const vw = window.innerWidth/4.3;
+const vh = window.innerHeight/4.3;
+const constrainingDimension = Math.max(vw, vh);
+const xdistance = 1.6*constrainingDimension;
 console.log(vw + ":::" +vh);
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 5, 1.5*vw);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 5, Math.max(2*constrainingDimension, 100));
 
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#mainc'),
@@ -31,7 +35,6 @@ loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/f
 
 let object1;
 let object2;
-
 function onScroll(){
 
   if(window.scrollY < 1200){
@@ -52,15 +55,21 @@ function onScroll(){
       camera.position.z = window.scrollY/10 + 50
       camera.position.x = 0;
       camera.rotation.y = 0;
-    }else if(window.scrollY < 2586){
+    }else if(window.scrollY < 2978){
       //parametric form of circle
-      const t = (window.scrollY-1800)/500;
-      camera.position.x = 2.125*vw*Math.sin(t);
-      camera.position.z = 80 + 150*Math.cos(t);
-      console.log(camera.position.x + ":" + camera.position.z);
+      const t = (window.scrollY-1800)/750;
+      camera.position.x = xdistance*Math.sin(t);
+      camera.position.z = 70 + 150*Math.cos(t);
+ 
       //also rotate camera
-      camera.rotation.y = Math.atan(camera.position.x/camera.position.z);
+      camera.rotation.y = Math.atan(camera.position.x/(camera.position.z-70));
+
+      console.log(camera.position.x + ":" + camera.position.z + ":" + camera.rotation.y);
       console.log(camera.rotation.y);
+    }else{
+      camera.position.x = xdistance;
+      camera.position.z = 70;
+      camera.rotation.y = Math.PI/2;
     }
   }
   console.log(window.scrollY);
@@ -76,14 +85,12 @@ function onScroll(){
 
 function generateBinaryFloatingText(number, zoffset, zspread){
   const materials = [new THREE.MeshBasicMaterial({color: 0x2A8542}), new THREE.MeshBasicMaterial({color: 0xBBBBBB})];
-  const geometries = [get3DTextGeometry('1', 6, 0), get3DTextGeometry('0', 6, 0)];
-  const xspread = vw * 0.95;
-  const yspread = vh * 0.95;
-  console.log(xspread + ":" + yspread);
+  const geometries = [get3DTextGeometry('1', 6, 0.7), get3DTextGeometry('0', 6, 0.7)];
+  const spread = constrainingDimension;
   let mesh;
   [...Array(number)].forEach(() => {
     mesh = new THREE.Mesh(_.sample(geometries), _.sample(materials));
-    mesh.position.set(THREE.MathUtils.randFloatSpread(xspread), THREE.MathUtils.randFloatSpread(yspread), zoffset + THREE.MathUtils.randFloatSpread(zspread));
+    mesh.position.set(THREE.MathUtils.randFloatSpread(spread), THREE.MathUtils.randFloatSpread(spread), zoffset + THREE.MathUtils.randFloatSpread(zspread));
     scene.add(mesh);
   });
 }
@@ -112,14 +119,34 @@ function get3DTextGeometry(text, size, width){
 function ready(){
   console.log("ready");
   const textMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
+  const shipMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
   object1 = generate3DText('MK', 10, textMaterial);
   object2 = generate3DText('Software Developer', 3, textMaterial);
 
-  generateBinaryFloatingText(Math.round(vw*vh/200), 70, 20);
+  generateBinaryFloatingText(Math.round(constrainingDimension**2/200), 70, Math.max(20, window.innerWidth/80));
 
   object1.position.y = 9;
   object1.material.transparent = true;
   object2.material.transparent = true;
+
+  const loader2 = new FBXLoader();
+  loader2.load("./models/ROCKET.fbx", model => {
+        model.traverse((child) => {
+          if(child.isMesh){
+            child.material = shipMaterial;
+          }
+        });
+        const scale = constrainingDimension/60;
+        model.scale.x = scale;
+        model.scale.z = scale;
+        model.scale.y = scale;
+        model.position.z = 70;
+        model.position.y = constrainingDimension*0.13;
+        model.position.x = xdistance*0.8;
+
+        scene.add(model);
+        console.log("--- loaded ----");
+    });
 
   scene.add(object1);
   scene.add(object2);
