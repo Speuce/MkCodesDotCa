@@ -19,23 +19,24 @@ const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#mainc'),
 });
 
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(50);
+function setup(){
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.position.setZ(50);
+  renderer.render(scene, camera);
+}
 
-renderer.render(scene, camera);
+function load(){
+  const loader = new FontLoader();
+  loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/fonts/helvetiker_bold.typeface.json', (loaded_font) => {
+    global.font = loaded_font;
+    console.log("ready player 1");
+    ready();
+  });
 
-const loader = new FontLoader();
-let font;
-loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/fonts/helvetiker_bold.typeface.json', (loaded_font) => {
-  font = loaded_font;
-  console.log("ready player 1");
-  ready();
-});
-
-const loader2 = new FBXLoader();
-const shipMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
-loader2.load("./models/ROCKET.fbx", model => {
+  const loader2 = new FBXLoader();
+  const shipMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
+  loader2.load("./models/ROCKET.fbx", model => {
       model.traverse((child) => {
         if(child.isMesh){
           child.material = shipMaterial;
@@ -52,6 +53,7 @@ loader2.load("./models/ROCKET.fbx", model => {
       scene.add(model);
       console.log("--- loaded ----");
   });
+}
 
 let object1;
 let object2;
@@ -156,6 +158,17 @@ function generateBinaryFloatingText(number, zoffset, zspread){
   });
 }
 
+function generateRotatingObjects(number){
+  const material = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
+  const geometries = [new THREE.IcosahedronBufferGeometry(2), new THREE.IcosahedronBufferGeometry(1.25), new THREE.IcosahedronBufferGeometry(1.5), new THREE.IcosahedronBufferGeometry(1.75)];
+  let mesh2;
+  [...Array(number)].forEach(() => {
+    mesh2 = new THREE.Mesh(_.sample(geometries), material);
+    mesh2.position.set(THREE.MathUtils.randFloatSpread(global.vw/3), THREE.MathUtils.randFloatSpread(global.vh/3),0);
+    scene.add(mesh2);
+  });
+}
+
 
 function generate3DText(text, size, material){
   return new THREE.Mesh(get3DTextGeometry(text, size), material);
@@ -164,7 +177,7 @@ function generate3DText(text, size, material){
 function get3DTextGeometry(text, size, width){
   if (width === undefined) width = Math.min(3, Math.round(size/2));
   const geometry = new TextGeometry(text, {
-    font: font,
+    font: global.font,
     size: size,
     height: width,
     curveSegments: size,
@@ -182,8 +195,8 @@ function ready(){
   const textMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
   object1 = generate3DText('MK', 10, textMaterial);
   object2 = generate3DText('Software Developer', 3, textMaterial);
-
-  generateBinaryFloatingText(Math.round(global.constrainingDimension**2/200), 70, Math.max(20, window.innerWidth/80));
+  const density = Math.round(global.constrainingDimension**2/200);
+  generateBinaryFloatingText(density, 70, Math.max(20, window.innerWidth/80));
 
   object1.position.y = 9;
   object1.material.transparent = true;
@@ -191,6 +204,8 @@ function ready(){
 
   scene.add(object1);
   scene.add(object2);
+
+  generateRotatingObjects(Math.round(density/50));
   
   let lastFps = 0;
   let frames = 0;
@@ -219,3 +234,6 @@ function animate(){
     start = Date.now();
   }
 }
+
+setup();
+load();
