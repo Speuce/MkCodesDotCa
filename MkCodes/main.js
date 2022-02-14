@@ -161,12 +161,32 @@ function generateBinaryFloatingText(number, zoffset, zspread){
 function generateRotatingObjects(number){
   const material = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
   const geometries = [new THREE.IcosahedronBufferGeometry(2), new THREE.IcosahedronBufferGeometry(1.25), new THREE.IcosahedronBufferGeometry(1.5), new THREE.IcosahedronBufferGeometry(1.75)];
-  let mesh2;
+  let mesh2, x, y;
   [...Array(number)].forEach(() => {
     mesh2 = new THREE.Mesh(_.sample(geometries), material);
-    mesh2.position.set(THREE.MathUtils.randFloatSpread(global.vw/3), THREE.MathUtils.randFloatSpread(global.vh/3),0);
+    [x, y] = constrainOutOfBox(THREE.MathUtils.randFloatSpread(global.vw/3), THREE.MathUtils.randFloatSpread(global.vh/3), 30, 23)
+    mesh2.position.set(x, y,-10);
     scene.add(mesh2);
   });
+}
+
+/**
+ * Draws a box ±rangeX, ±rangeY.
+ * If the valueX/Y is within the box, returns a point outside the box.
+ */
+function constrainOutOfBox(valueX, valueY, rangeX, rangeY){
+  console.log(valueX + ":" + valueY);
+  const withinXBounds = (Math.abs(valueX) < rangeX);
+  const withinYBounds = (Math.abs(valueY) < rangeY);
+  console.log( "::" + withinXBounds + ":" + withinYBounds);
+  if(withinXBounds && withinYBounds){
+    if((rangeX - Math.abs(valueX)) < (rangeY - Math.abs(valueY))){
+      return [Math.sign(valueX)*rangeX, valueY];
+    }else{
+      return [valueX, Math.sign(valueY)*rangeY];
+    }
+  }
+  return [valueX, valueY];
 }
 
 
@@ -205,7 +225,7 @@ function ready(){
   scene.add(object1);
   scene.add(object2);
 
-  generateRotatingObjects(Math.round(density/50));
+  generateRotatingObjects(Math.round(density/20));
   
   let lastFps = 0;
   let frames = 0;
