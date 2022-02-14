@@ -150,6 +150,7 @@ function generateBinaryFloatingText(number, zoffset, zspread){
   const materials = [new THREE.MeshBasicMaterial({color: 0x2A8542}), new THREE.MeshBasicMaterial({color: 0xBBBBBB})];
   const geometries = [get3DTextGeometry('1', 6, 0.7), get3DTextGeometry('0', 6, 0.7)];
   const spread = global.constrainingDimension;
+  const rotationSpread = 0.01;
   let mesh;
   [...Array(number)].forEach(() => {
     mesh = new THREE.Mesh(_.sample(geometries), _.sample(materials));
@@ -159,15 +160,18 @@ function generateBinaryFloatingText(number, zoffset, zspread){
 }
 
 function generateRotatingObjects(number){
-  const material = new THREE.MeshStandardMaterial({color: 0xFBFBFB});
+  const material = new THREE.MeshStandardMaterial({color: 0xF1F1F1});
   const geometries = [new THREE.IcosahedronBufferGeometry(2), new THREE.IcosahedronBufferGeometry(1.25), new THREE.IcosahedronBufferGeometry(1.5), new THREE.IcosahedronBufferGeometry(1.75)];
-  let mesh2, x, y;
+  let mesh, x, y;
+  let objects = [];
   [...Array(number)].forEach(() => {
-    mesh2 = new THREE.Mesh(_.sample(geometries), material);
+    mesh = new THREE.Mesh(_.sample(geometries), material);
     [x, y] = constrainOutOfBox(THREE.MathUtils.randFloatSpread(global.vw/2), THREE.MathUtils.randFloatSpread(global.vh/2), 30, 23)
-    mesh2.position.set(x, y,-10 + THREE.MathUtils.randFloatSpread(5));
-    scene.add(mesh2);
+    mesh.position.set(x, y,-15 + THREE.MathUtils.randFloatSpread(5));
+    scene.add(mesh);
+    objects.push({mesh, rotate: [THREE.MathUtils.randFloatSpread(0.03), THREE.MathUtils.randFloatSpread(0.03), THREE.MathUtils.randFloatSpread(0.03)]});
   });
+  return objects;
 }
 
 /**
@@ -208,6 +212,8 @@ function get3DTextGeometry(text, size, width){
   return geometry;
 }
 
+
+let isocahedrons;
 function ready(){
   console.log("ready");
   const textMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
@@ -223,7 +229,8 @@ function ready(){
   scene.add(object1);
   scene.add(object2);
 
-  generateRotatingObjects(Math.round(density/20));
+  isocahedrons = generateRotatingObjects(Math.max(Math.round(density/20), 20));
+  console.log(isocahedrons);
 
   const lightSource1 = new THREE.PointLight(0xffffff);
   lightSource1.position.set(0, 0, 20);
@@ -238,9 +245,9 @@ function ready(){
 
   animate();
 }
-
+let framez = 0;
 function animate(){
-  frames+=1;
+  framez+=1;
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   //object1.rotation.z += 2;
@@ -248,12 +255,22 @@ function animate(){
     spaceship.rotation.y += 0.01;
     //spaceship.rotation.z += 0.01;
   }
-  if(frames == 20){
-    const secs = (Date.now()-start)/1000;
-    lastFps = 20/secs;
-    frames = 0;
-    document.getElementById("header").innerText = Math.round(lastFps*100)/100;
-    start = Date.now();
+  if(sceneNum == 1 && isocahedrons){
+    let x, y, z;
+    isocahedrons.forEach(({mesh, rotate}) => {
+      [x, y, z] = rotate;
+      mesh.rotation.x += x;
+      mesh.rotation.y += y;
+      mesh.rotation.z += z;
+    });
+  }
+  if(framez == 20){
+    console.log("frame");
+    // const secs = (Date.now()-start)/1000;
+    // lastFps = 20/secs;
+    framez = 0;
+    // document.getElementById("header").innerText = Math.round(lastFps*100)/100;
+    // start = Date.now();
   }
 }
 
