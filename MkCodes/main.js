@@ -15,6 +15,7 @@ global.xdistance = 1.6*global.constrainingDimension;
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 5, Math.max(2*global.constrainingDimension, 100));
 const scene1ToDim = [];
+const scene1ToRotate = [];
 
 
 const renderer = new THREE.WebGLRenderer({
@@ -32,7 +33,6 @@ function load(){
   const loader = new FontLoader();
   loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/fonts/helvetiker_bold.typeface.json', (loaded_font) => {
     global.font = loaded_font;
-    console.log("ready player 1");
     ready();
   });
 
@@ -58,11 +58,11 @@ function load(){
 }
 
 let object1;
+let mynameObject;
 let object2;
 let spaceship;
 let sceneNum = 0;
 function onScroll(){
-
   if(window.scrollY < 1200){
     sceneNum=1;
     scrollScene1();
@@ -70,13 +70,12 @@ function onScroll(){
     if(sceneNum == 1){
       endScene1();
     }
-    //object2.material.opacity = 0;
     if(window.scrollY < 1800){
       //empty
       sceneNum = 2;
       scrollScene2();
     }else if(window.scrollY < 2978){
-      //parametric form of circle
+      
       sceneNum = 3;
       scrollScene3();
     }else{
@@ -99,8 +98,10 @@ function onScroll(){
 }
 
 function scrollScene1(){
-  object1.rotation.y = window.scrollY/100;
-  object2.rotation.y = window.scrollY/100;
+  const rotationY = window.scrollY/100;
+  scene1ToRotate.forEach((item) => {
+    item.rotation.y = rotationY;
+  })
   const opacity = Math.min(1,1-((window.scrollY-500)/700));
   scene1ToDim.forEach((material) => {
     material.opacity = opacity;
@@ -127,10 +128,11 @@ function scrollScene2(){
   camera.rotation.y = 0;
   camera.rotation.x = 0;
   camera.rotation.z = 0;
-  console.log('2:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  //console.log('2:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function scrollScene3(){
+  //parametric form of circle
   const t = (window.scrollY-1800)/750;
   camera.position.x = global.xdistance*Math.sin(t);
   camera.position.z = 70 + 160*Math.cos(t);
@@ -140,7 +142,7 @@ function scrollScene3(){
   camera.rotation.x = 0;
   camera.rotation.z = 0;
 
-  console.log('3:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  //console.log('3:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function endScene3(){
@@ -149,11 +151,11 @@ function endScene3(){
   camera.rotation.y = Math.PI/2;
   camera.rotation.x = -Math.PI/2;
   camera.rotation.z = Math.PI/2;
-  console.log('3(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  //console.log('3(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function scrollScene4(){
-  console.log('4:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  //console.log('4:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
   //camera.rotateX(-1/50);
   camera.rotation.y = (Math.PI/2)-(window.scrollY-2978)/500;
 }
@@ -241,16 +243,20 @@ function ready(){
   scene1ToDim.push(textMaterial);
   scene1ToDim.push(rotatingObjectMaterial);
   object1 = generate3DText('MK', 10, textMaterial);
+  mynameObject = generate3DText('Matthew Kwiatkowski', 1.33, textMaterial);
   object2 = generate3DText('Software Developer', 3, textMaterial);
   const density = Math.round(global.constrainingDimension**2/200);
   generateBinaryFloatingText(density, 70, Math.max(20, window.innerWidth/80));
 
-  object1.position.y = 9;
+  object1.position.y = 8.5;
+  mynameObject.position.y = -3.5;
+  object2.position.y = 0;
   textMaterial.transparent = true;
   rotatingObjectMaterial.transparent = true;
 
-  scene.add(object1);
-  scene.add(object2);
+  scene.add(object1, object2, mynameObject);
+  scene1ToRotate.push(object1, object2, mynameObject);
+  
 
   isocahedrons = generateRotatingObjects(Math.max(Math.round(density/15), 30));
 
