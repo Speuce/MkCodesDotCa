@@ -87,7 +87,7 @@ function onScroll(){
       scrollScene4();
     }
   }
-  console.log(window.scrollY);
+  //console.log(window.scrollY);
   if(window.scrollY > 10 && window.scrollY < 300){
     document.querySelector("#down-arrow").classList.add("hide-arrow");
   }else if(window.scrollY > 300){
@@ -111,16 +111,23 @@ function scrollScene1(){
 }
 
 function endScene1(){
+  clearScene1Objects();
+  camera.position.z = 230;
+}
+
+function clearScene1Objects(){
   scene1ToDim.forEach((material) => {
     material.opacity = 0;
   });
-  camera.position.z = 230;
 }
 
 function scrollScene2(){
   camera.position.z = window.scrollY/10 + 50
   camera.position.x = 0;
   camera.rotation.y = 0;
+  camera.rotation.x = 0;
+  camera.rotation.z = 0;
+  console.log('2:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function scrollScene3(){
@@ -130,9 +137,10 @@ function scrollScene3(){
 
   //also rotate camera
   camera.rotation.y = Math.atan(camera.position.x/(camera.position.z-70));
+  camera.rotation.x = 0;
+  camera.rotation.z = 0;
 
-  console.log(camera.position.x + ":" + camera.position.z + ":" + camera.rotation.y);
-  console.log(camera.rotation.y);
+  console.log('3:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function endScene3(){
@@ -141,7 +149,7 @@ function endScene3(){
   camera.rotation.y = Math.PI/2;
   camera.rotation.x = -Math.PI/2;
   camera.rotation.z = Math.PI/2;
-  console.log('3:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  console.log('3(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function scrollScene4(){
@@ -245,7 +253,6 @@ function ready(){
   scene.add(object2);
 
   isocahedrons = generateRotatingObjects(Math.max(Math.round(density/15), 30));
-  console.log(isocahedrons);
 
   const lightSource1 = new THREE.PointLight(0xffffff);
   lightSource1.position.set(0, 0, 20);
@@ -257,6 +264,9 @@ function ready(){
   
   window.addEventListener('scroll', onScroll, false); 
   onScroll();
+  if(sceneNum > 2){
+    clearScene1Objects();
+  }
 
   animate();
 }
@@ -280,7 +290,6 @@ function animate(){
     });
   }
   if(framez == 20){
-    console.log("frame");
     // const secs = (Date.now()-start)/1000;
     // lastFps = 20/secs;
     framez = 0;
