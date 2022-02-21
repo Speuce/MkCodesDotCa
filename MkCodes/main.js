@@ -86,15 +86,18 @@ function onScroll(){
       scrollScene4();
     }
   }
-  //console.log(window.scrollY);
+
   if(window.scrollY > 10 && window.scrollY < 300){
     document.querySelector("#down-arrow").classList.add("hide-arrow");
+    document.querySelector("#navbar").classList.add("hide-navbar");
   }else if(window.scrollY > 300){
     document.querySelector("#down-arrow").classList.remove("shown");
   }else{
     document.querySelector("#down-arrow").classList.add("shown");
     document.querySelector("#down-arrow").classList.remove("hide-arrow");
+    document.querySelector("#navbar").classList.remove("hide-navbar");
   }
+
 }
 
 function scrollScene1(){
