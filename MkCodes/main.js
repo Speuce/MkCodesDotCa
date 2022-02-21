@@ -166,7 +166,7 @@ function generateRotatingObjects(number){
   let objects = [];
   [...Array(number)].forEach(() => {
     mesh = new THREE.Mesh(_.sample(geometries), material);
-    [x, y] = constrainOutOfBox(THREE.MathUtils.randFloatSpread(global.vw/2), THREE.MathUtils.randFloatSpread(global.vh/2), 30, 23)
+    [x, y] = constrainOutOfBox(THREE.MathUtils.randFloatSpread(global.vw/1.5), THREE.MathUtils.randFloatSpread(global.vh/1.5), 30, 23)
     if(!objects.some(({mesh, rotate}) => isWithinDistance(mesh.position.x, x, mesh.position.y, y, 5))){
       mesh.position.set(x, y,-15 + THREE.MathUtils.randFloatSpread(5));
       scene.add(mesh);
@@ -236,7 +236,7 @@ function ready(){
   scene.add(object1);
   scene.add(object2);
 
-  isocahedrons = generateRotatingObjects(Math.max(Math.round(density/20), 20));
+  isocahedrons = generateRotatingObjects(Math.max(Math.round(density/15), 30));
   console.log(isocahedrons);
 
   const lightSource1 = new THREE.PointLight(0xffffff);
