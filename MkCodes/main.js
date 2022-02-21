@@ -14,6 +14,8 @@ global.constrainingDimension = Math.max(global.vw, global.vh);
 global.xdistance = 1.6*global.constrainingDimension;
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 5, Math.max(2*global.constrainingDimension, 100));
+const scene1ToDim = [];
+
 
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#mainc'),
@@ -100,16 +102,18 @@ function scrollScene1(){
   object1.rotation.y = window.scrollY/100;
   object2.rotation.y = window.scrollY/100;
   const opacity = Math.min(1,1-((window.scrollY-500)/700));
-  object2.material.opacity = opacity;
-  object1.material.opacity = opacity;
+  scene1ToDim.forEach((material) => {
+    material.opacity = opacity;
+  });
   camera.position.z = window.scrollY/10 + 50
   camera.position.x = 0;
   camera.rotation.y = 0;
 }
 
 function endScene1(){
-  object1.material.opacity = 0;
-  object2.material.opacity = 0;
+  scene1ToDim.forEach((material) => {
+    material.opacity = 0;
+  });
   camera.position.z = 230;
 }
 
@@ -159,13 +163,15 @@ function generateBinaryFloatingText(number, zoffset, zspread){
   });
 }
 
+
+const rotatingObjectMaterial = new THREE.MeshStandardMaterial({color: 0xF1F1F1});
 function generateRotatingObjects(number){
-  const material = new THREE.MeshStandardMaterial({color: 0xF1F1F1});
+
   const geometries = [new THREE.IcosahedronBufferGeometry(2), new THREE.IcosahedronBufferGeometry(1.25), new THREE.IcosahedronBufferGeometry(1.5), new THREE.IcosahedronBufferGeometry(1.75)];
   let mesh, x, y;
   let objects = [];
   [...Array(number)].forEach(() => {
-    mesh = new THREE.Mesh(_.sample(geometries), material);
+    mesh = new THREE.Mesh(_.sample(geometries), rotatingObjectMaterial);
     [x, y] = constrainOutOfBox(THREE.MathUtils.randFloatSpread(global.vw/1.5), THREE.MathUtils.randFloatSpread(global.vh/1.5), 30, 23)
     if(!objects.some(({mesh, rotate}) => isWithinDistance(mesh.position.x, x, mesh.position.y, y, 5))){
       mesh.position.set(x, y,-15 + THREE.MathUtils.randFloatSpread(5));
@@ -224,14 +230,16 @@ let isocahedrons;
 function ready(){
   console.log("ready");
   const textMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
+  scene1ToDim.push(textMaterial);
+  scene1ToDim.push(rotatingObjectMaterial);
   object1 = generate3DText('MK', 10, textMaterial);
   object2 = generate3DText('Software Developer', 3, textMaterial);
   const density = Math.round(global.constrainingDimension**2/200);
   generateBinaryFloatingText(density, 70, Math.max(20, window.innerWidth/80));
 
   object1.position.y = 9;
-  object1.material.transparent = true;
-  object2.material.transparent = true;
+  textMaterial.transparent = true;
+  rotatingObjectMaterial.transparent = true;
 
   scene.add(object1);
   scene.add(object2);
