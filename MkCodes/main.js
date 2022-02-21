@@ -167,11 +167,18 @@ function generateRotatingObjects(number){
   [...Array(number)].forEach(() => {
     mesh = new THREE.Mesh(_.sample(geometries), material);
     [x, y] = constrainOutOfBox(THREE.MathUtils.randFloatSpread(global.vw/2), THREE.MathUtils.randFloatSpread(global.vh/2), 30, 23)
-    mesh.position.set(x, y,-15 + THREE.MathUtils.randFloatSpread(5));
-    scene.add(mesh);
-    objects.push({mesh, rotate: [THREE.MathUtils.randFloatSpread(0.03), THREE.MathUtils.randFloatSpread(0.03), THREE.MathUtils.randFloatSpread(0.03)]});
+    if(!objects.some(({mesh, rotate}) => isWithinDistance(mesh.position.x, x, mesh.position.y, y, 5))){
+      mesh.position.set(x, y,-15 + THREE.MathUtils.randFloatSpread(5));
+      scene.add(mesh);
+      objects.push({mesh, rotate: [THREE.MathUtils.randFloatSpread(0.03), THREE.MathUtils.randFloatSpread(0.03), THREE.MathUtils.randFloatSpread(0.03)]});
+    }
   });
   return objects;
+}
+
+function isWithinDistance(x1, x2, y1, y2, distance){
+  let squaredDistance2 = Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2);
+  return squaredDistance2 < Math.pow(distance,2);
 }
 
 /**
