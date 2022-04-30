@@ -13,7 +13,7 @@ global.vh = window.innerHeight/4.3;
 global.constrainingDimension = Math.max(global.vw, global.vh);
 global.xdistance = 1.6*global.constrainingDimension;
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 5, Math.max(2*global.constrainingDimension, 100));
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 5, Math.max(2*global.constrainingDimension, 1000));
 const scene1ToDim = [];
 const scene1ToRotate = [];
 const scene5ToRotate = [];
@@ -56,6 +56,7 @@ function load(){
       scene.add(model);
       console.log("--- loaded ----");
   });
+  onScroll(true);
 }
 
 let mkText;
@@ -63,12 +64,13 @@ let mynameObject;
 let titleObject;
 let spaceship;
 let sceneNum = 0;
-function onScroll(){
+function onScroll(endScene = false){
+  console.log("onscroll: " + window.scrollY);
   if(window.scrollY < 1200){
     sceneNum=1;
     scrollScene1();
   }else{
-    if(sceneNum == 1){
+    if(sceneNum == 1 || endScene === true){
       endScene1();
     }
     if(window.scrollY < 1800){
@@ -80,14 +82,14 @@ function onScroll(){
       sceneNum = 3;
       scrollScene3();
     }else if(window.scrollY < 3763){
-      if(sceneNum == 3){
+      if(sceneNum == 3 || endScene === true){
         endScene3();
       }
       sceneNum = 4;
       console.log("scrollY: " + window.scrollY);
       scrollScene4();
     }else{
-      if(sceneNum == 4){
+      if(sceneNum == 4 || endScene === true){
         endScene4();
       }
       sceneNum = 5;
@@ -176,7 +178,7 @@ function scrollScene4(){
 
 function endScene4(){
   camera.rotation.y = 0;
-  //console.log('3(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  console.log('3(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function scrollScene5(){
@@ -184,7 +186,7 @@ function scrollScene5(){
   //camera.rotateX(-1/50);
   // camera.rotation.y = (Math.PI/2)-(window.scrollY-2978)/500;
   // console.log(camera.rotation.y);
-  camera.position.y = -(window.scrollY-3763)/50;
+  camera.position.y = -(window.scrollY-3763)/20;
   //camera.rotation.y = 0;
   console.log(camera.position.x + "::" + camera.position.y + "::" + camera.position.z);
 }
@@ -286,19 +288,48 @@ function ready(){
   scene.add(mkText, titleObject, mynameObject);
   scene1ToRotate.push(mkText, titleObject, mynameObject);
 
-  const backgroundMaterial = new THREE.MeshBasicMaterial({color: 0x29ff34, wireframe: true});
-  const testObject123 =  new THREE.Mesh(new THREE.SphereGeometry( 20 ), backgroundMaterial);
-  testObject123.position.x = global.xdistance;
-  testObject123.rotation.z = Math.PI/2;
-  testObject123.rotation.y = Math.PI/4;
+  const planet1Material = new THREE.MeshBasicMaterial({color: 0x29ff34, wireframe: true});
+  const planet1 =  new THREE.Mesh(new THREE.SphereGeometry( 20 ), planet1Material);
+  planet1.position.x = global.xdistance*0.95;
+  planet1.rotation.z = Math.PI/2;
+  planet1.rotation.y = Math.PI/4;
   //testObject123.rotateOnAxis(new THREE.Vector3(-1, 0, 1), Math.PI/2);
-  testObject123.position.y = -50;
-  testObject123.position.z = 70;
+  planet1.position.y = -100;
+  planet1.position.z = 90;
+
+  const planet2Material = new THREE.MeshBasicMaterial({color: 0xfffb26, wireframe: true});
+  const planet2 =  new THREE.Mesh(new THREE.SphereGeometry( 70 ), planet2Material);
+
+  planet2.rotation.z = Math.PI/2.5;
+  planet2.rotation.y = -Math.PI/5;
+  //testObject123.rotateOnAxis(new THREE.Vector3(-1, 0, 1), Math.PI/2);
+  planet2.position.x = global.xdistance*1.15;
+  planet2.position.y = -300;
+  planet2.position.z = 40;
+
+  const planet2ring = new THREE.Mesh(new THREE.RingGeometry(73, 100, 100, 10), planet2Material);
+  planet2ring.position.x = global.xdistance*1.12;
+  planet2ring.position.y = -250;
+  planet2ring.position.z = 40;
+  planet2ring.rotation.z = -Math.PI/2.5;
+  planet2ring.rotation.y = Math.PI/3.5;
+  planet2ring.rotation.x = Math.PI/32;
+
+  const planet3Material = new THREE.MeshBasicMaterial({color: 0xff1212, wireframe: true});
+  const planet3 =  new THREE.Mesh(new THREE.SphereGeometry( 20 ), planet3Material);
+
+  planet3.rotation.z = Math.PI/2.5;
+  planet3.rotation.y = -Math.PI/5;
+  //testObject123.rotateOnAxis(new THREE.Vector3(-1, 0, 1), Math.PI/2);
+  planet3.position.x = global.xdistance*0.95;
+  planet3.position.y = -800;
+  planet3.position.z = 40;
 
   // testObject123.rotation.z = Math.PI/2;
   // testObject123.rotation.y = Math.PI/8;
-  scene.add(testObject123);
-  scene5ToRotate.push(testObject123);
+  scene.add(planet1);
+  scene.add(planet2, planet2ring, planet3);
+  scene5ToRotate.push(planet1, planet2, planet3);
   
 
   isocahedrons = generateRotatingObjects(Math.max(Math.round(density/15), 30));
@@ -338,10 +369,16 @@ function animate(){
   }else if(sceneNum == 3){
     
   }else if(sceneNum == 4){
-    spaceship.rotation.y += 0.01;
+    if(spaceship){
+      spaceship.rotation.y += 0.01;
+    }
+
     // scene5ToRotate.forEach((item) => {
     //   item.rotation.x += 0.005;
     // });
+    scene5ToRotate.forEach((item) => {
+      item.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.005);
+    });
   }else if(sceneNum == 5){
     scene5ToRotate.forEach((item) => {
       item.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.005);
