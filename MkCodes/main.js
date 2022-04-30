@@ -16,6 +16,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 5, Math.max(2*global.constrainingDimension, 100));
 const scene1ToDim = [];
 const scene1ToRotate = [];
+const scene5ToRotate = [];
 
 
 const renderer = new THREE.WebGLRenderer({
@@ -57,9 +58,9 @@ function load(){
   });
 }
 
-let object1;
+let mkText;
 let mynameObject;
-let object2;
+let titleObject;
 let spaceship;
 let sceneNum = 0;
 function onScroll(){
@@ -78,12 +79,19 @@ function onScroll(){
       
       sceneNum = 3;
       scrollScene3();
-    }else{
+    }else if(window.scrollY < 3763){
       if(sceneNum == 3){
         endScene3();
       }
       sceneNum = 4;
+      console.log("scrollY: " + window.scrollY);
       scrollScene4();
+    }else{
+      if(sceneNum == 4){
+        endScene4();
+      }
+      sceneNum = 5;
+      scrollScene5();
     }
   }
 
@@ -104,7 +112,7 @@ function scrollScene1(){
   const rotationY = window.scrollY/100;
   scene1ToRotate.forEach((item) => {
     item.rotation.y = rotationY;
-  })
+  });
   const opacity = Math.min(1,1-((window.scrollY-500)/700));
   scene1ToDim.forEach((material) => {
     material.opacity = opacity;
@@ -161,6 +169,24 @@ function scrollScene4(){
   //console.log('4:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
   //camera.rotateX(-1/50);
   camera.rotation.y = (Math.PI/2)-(window.scrollY-2978)/500;
+  camera.position.y = 0;
+  console.log(camera.rotation.y);
+  console.log(camera.position.x + "::" + camera.position.y + "::" + camera.position.z);
+}
+
+function endScene4(){
+  camera.rotation.y = 0;
+  //console.log('3(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+}
+
+function scrollScene5(){
+  console.log('5:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  //camera.rotateX(-1/50);
+  // camera.rotation.y = (Math.PI/2)-(window.scrollY-2978)/500;
+  // console.log(camera.rotation.y);
+  camera.position.y = -(window.scrollY-3763)/50;
+  //camera.rotation.y = 0;
+  console.log(camera.position.x + "::" + camera.position.y + "::" + camera.position.z);
 }
 
 function generateBinaryFloatingText(number, zoffset, zspread){
@@ -245,20 +271,34 @@ function ready(){
   const textMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
   scene1ToDim.push(textMaterial);
   scene1ToDim.push(rotatingObjectMaterial);
-  object1 = generate3DText('MK', 10, textMaterial);
+  mkText = generate3DText('MK', 10, textMaterial);
   mynameObject = generate3DText('Matthew Kwiatkowski', 1.33, textMaterial);
-  object2 = generate3DText('Software Developer', 3, textMaterial);
+  titleObject = generate3DText('Software Developer', 3, textMaterial);
   const density = Math.round(global.constrainingDimension**2/200);
   generateBinaryFloatingText(density, 70, Math.max(20, window.innerWidth/80));
 
-  object1.position.y = 8.5;
+  mkText.position.y = 8.5;
   mynameObject.position.y = -3.5;
-  object2.position.y = 0;
+  titleObject.position.y = 0;
   textMaterial.transparent = true;
   rotatingObjectMaterial.transparent = true;
 
-  scene.add(object1, object2, mynameObject);
-  scene1ToRotate.push(object1, object2, mynameObject);
+  scene.add(mkText, titleObject, mynameObject);
+  scene1ToRotate.push(mkText, titleObject, mynameObject);
+
+  const backgroundMaterial = new THREE.MeshBasicMaterial({color: 0x29ff34, wireframe: true});
+  const testObject123 =  new THREE.Mesh(new THREE.SphereGeometry( 20 ), backgroundMaterial);
+  testObject123.position.x = global.xdistance;
+  testObject123.rotation.z = Math.PI/2;
+  testObject123.rotation.y = Math.PI/4;
+  //testObject123.rotateOnAxis(new THREE.Vector3(-1, 0, 1), Math.PI/2);
+  testObject123.position.y = -50;
+  testObject123.position.z = 70;
+
+  // testObject123.rotation.z = Math.PI/2;
+  // testObject123.rotation.y = Math.PI/8;
+  scene.add(testObject123);
+  scene5ToRotate.push(testObject123);
   
 
   isocahedrons = generateRotatingObjects(Math.max(Math.round(density/15), 30));
@@ -285,17 +325,26 @@ function animate(){
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   //object1.rotation.z += 2;
-  if(sceneNum >= 3 && spaceship){
+  if(sceneNum == 1){
+    if(isocahedrons){
+      let x, y, z;
+      isocahedrons.forEach(({mesh, rotate}) => {
+        [x, y, z] = rotate;
+        mesh.rotation.x += x;
+        mesh.rotation.y += y;
+        mesh.rotation.z += z;
+      });
+    }  
+  }else if(sceneNum == 3){
+    
+  }else if(sceneNum == 4){
     spaceship.rotation.y += 0.01;
-    //spaceship.rotation.z += 0.01;
-  }
-  if(sceneNum == 1 && isocahedrons){
-    let x, y, z;
-    isocahedrons.forEach(({mesh, rotate}) => {
-      [x, y, z] = rotate;
-      mesh.rotation.x += x;
-      mesh.rotation.y += y;
-      mesh.rotation.z += z;
+    // scene5ToRotate.forEach((item) => {
+    //   item.rotation.x += 0.005;
+    // });
+  }else if(sceneNum == 5){
+    scene5ToRotate.forEach((item) => {
+      item.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.005);
     });
   }
   if(framez == 20){
