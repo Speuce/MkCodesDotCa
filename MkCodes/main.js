@@ -17,6 +17,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHei
 const scene1ToDim = [];
 const scene1ToRotate = [];
 const scene5ToRotate = [];
+const scene5ToMove = [];
 
 
 const renderer = new THREE.WebGLRenderer({
@@ -190,7 +191,10 @@ function scrollScene5(){
   //camera.rotateX(-1/50);
   // camera.rotation.y = (Math.PI/2)-(window.scrollY-2978)/500;
   // console.log(camera.rotation.y);
-  camera.position.y = -(window.scrollY-3763)/20;
+  camera.position.y = -(window.scrollY-3763)*global.xdistance*0.00015;
+  camera.rotation.z = Math.PI/2 - (window.scrollY-3763)*0.00024;
+  // camera.position.z = 70 + (window.scrollY-3763)*0.000019*global.xdistance;
+  // camera.position.x = global.xdistance + (window.scrollY-3763)*global.xdistance*0.0000016;
   //camera.rotation.y = 0;
   console.log(camera.position.x + "::" + camera.position.y + "::" + camera.position.z);
 }
@@ -301,6 +305,24 @@ function ready(){
   planet1.position.y = -100;
   planet1.position.z = 90;
 
+  const moon1Material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true});
+  const moon1 =  new THREE.Mesh(new THREE.SphereGeometry( 5 ), moon1Material);
+  moon1.rotation.z = Math.PI/2;
+  moon1.rotation.y = Math.PI/4;
+  //testObject123.rotateOnAxis(new THREE.Vector3(-1, 0, 1), Math.PI/2);
+  moon1.position.x = global.xdistance*0.95;
+  moon1.position.y = -100;
+  moon1.position.z = 90;
+
+  scene5ToMove.push(
+    (t) => {
+      moon1.position.x = global.xdistance*0.95 + 55*Math.sin(t*0.006 + Math.PI/2);
+      moon1.position.y = -100 + 55*Math.cos(t*0.006);
+      moon1.position.z = 90 + 35*Math.sin(t*0.006);
+    },
+  );
+  scene5ToRotate.push([moon1, 0.007, new THREE.Vector3(0, 1, 0)]);
+
   const planet2Material = new THREE.MeshBasicMaterial({color: 0xfffb26, wireframe: true});
   const planet2 =  new THREE.Mesh(new THREE.SphereGeometry( 70 ), planet2Material);
 
@@ -329,15 +351,60 @@ function ready(){
   planet3.position.y = -800;
   planet3.position.z = 40;
 
-  // testObject123.rotation.z = Math.PI/2;
-  // testObject123.rotation.y = Math.PI/8;
-  scene.add(planet1);
-  scene.add(planet2, planet2ring, planet3);
-  scene5ToRotate.push([planet1, 0.005, new THREE.Vector3(0, 1, 0)],
+  const planet4Material = new THREE.MeshBasicMaterial({color: 0xfab223, wireframe: true});
+  const planet4 =  new THREE.Mesh(new THREE.SphereGeometry( 20 ), planet4Material);
+  planet4.rotation.z = Math.PI/2.5;
+  planet4.rotation.y = -Math.PI/5;
+  //testObject123.rotateOnAxis(new THREE.Vector3(-1, 0, 1), Math.PI/2);
+  planet4.position.x = global.xdistance*0.85;
+  planet4.position.y = -590;
+  planet4.position.z = 500;
+
+  const planet5Material = new THREE.MeshBasicMaterial({color: 0x9f55a3, wireframe: true});
+  const planet5 =  new THREE.Mesh(new THREE.SphereGeometry( 25 ), planet5Material);
+  planet5.rotation.z = Math.PI/2.5;
+  planet5.rotation.y = -Math.PI/5;
+  //testObject123.rotateOnAxis(new THREE.Vector3(-1, 0, 1), Math.PI/2);
+  planet5.position.x = global.xdistance*0.85;
+  planet5.position.y = -550;
+  planet5.position.z = 220;
+
+  const moon2Material = new THREE.MeshBasicMaterial({color: 0x449bb3, wireframe: true});
+  const moon2 =  new THREE.Mesh(new THREE.SphereGeometry( 5 ), moon2Material);
+  moon2.rotation.z = Math.PI/2;
+  moon2.rotation.y = Math.PI/4;
+  //testObject123.rotateOnAxis(new THREE.Vector3(-1, 0, 1), Math.PI/2);
+  moon2.position.x = global.xdistance*0.85;
+  moon2.position.y = -550;
+  moon2.position.z = 220;
+
+  //scene5ToRotate.push([moon1, 0.007, new THREE.Vector3(0, 1, 0)]);
+
+  scene5ToMove.push(
+    (t) => {
+      planet4.position.y = -590 + 150*Math.sin(t*0.01);
+      planet4.position.z = 500+ 300*Math.cos(t*0.01+Math.PI/1.3);
+
+      planet5.position.y = -550 + 30*Math.cos(t*0.01);
+      planet5.position.z = 220 + 160*Math.sin(t*0.01);
+
+      moon2.position.x = planet5.position.x + 25*Math.sin(t*0.016 + Math.PI/2);
+      moon2.position.y = planet5.position.y + 35*Math.cos(t*0.018);
+      moon2.position.z = planet5.position.z + 35*Math.sin(t*0.016);
+
+    },
+  );
+  
+  scene.add(planet1,moon1,planet2, planet2ring, planet3, planet4,  planet5, moon2);
+  scene5ToRotate.push([planet1, 0.005, new THREE.Vector3(0, -1, 0)],
   [planet2, 0.001, new THREE.Vector3(0, 1, 0)],
   [planet3, 0.01, new THREE.Vector3(0, 1, 0)], 
+  [planet4, 0.02, new THREE.Vector3(0, 1, 0)], 
+  [planet5, 0.005, new THREE.Vector3(0, 1, 0)], 
   [planet2ring, 0.001, new THREE.Vector3(0, 0, 1)]);
-  
+
+
+
 
   isocahedrons = generateRotatingObjects(Math.max(Math.round(density/15), 30));
 
@@ -358,6 +425,7 @@ function ready(){
   animate();
 }
 let framez = 0;
+let scene5Framez = 0;
 function animate(){
   framez+=1;
   requestAnimationFrame(animate);
@@ -384,18 +452,26 @@ function animate(){
     scene5ToRotate.forEach(([item, speed, rotationalAxis]) => {
       item.rotateOnAxis(rotationalAxis, speed);
     });
+    scene5ToMove.forEach((item) => {
+      item(scene5Framez);
+    });
+    scene5Framez+=1;
   }else if(sceneNum == 5){
     scene5ToRotate.forEach(([item, speed, rotationalAxis]) => {
       item.rotateOnAxis(rotationalAxis, speed);
     });
+    scene5Framez+=1;
+    scene5ToMove.forEach((item) => {
+      item(scene5Framez);
+    });
   }
-  if(framez == 20){
-    // const secs = (Date.now()-start)/1000;
-    // lastFps = 20/secs;
-    framez = 0;
-    // document.getElementById("header").innerText = Math.round(lastFps*100)/100;
-    // start = Date.now();
-  }
+  // if(framez == 20){
+  //   // const secs = (Date.now()-start)/1000;
+  //   // lastFps = 20/secs;
+  //   framez = 0;
+  //   // document.getElementById("header").innerText = Math.round(lastFps*100)/100;
+  //   // start = Date.now();
+  // }
 }
 
 setup();
