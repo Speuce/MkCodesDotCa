@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 canvas {
   position: fixed;
   top: 0;
@@ -6,6 +10,10 @@ canvas {
 
 body {
   overflow-y: scroll;
+}
+
+.navbuffer {
+  height: 130px;
 }
 
 .rotate {
