@@ -56,7 +56,6 @@ function load(){
       scene.add(model);
       console.log("--- loaded ----");
   });
-  onScroll(true);
 }
 
 let mkText;
@@ -65,7 +64,7 @@ let titleObject;
 let spaceship;
 let sceneNum = 0;
 function onScroll(endScene = false){
-  console.log("onscroll: " + window.scrollY);
+  console.log("onscroll: " + window.scrollY + ":" + endScene);
   if(window.scrollY < 1200){
     sceneNum=1;
     scrollScene1();
@@ -89,6 +88,7 @@ function onScroll(endScene = false){
       console.log("scrollY: " + window.scrollY);
       scrollScene4();
     }else{
+      console.log("endscene: " + (endScene === true))
       if(sceneNum == 4 || endScene === true){
         endScene4();
       }
@@ -155,7 +155,7 @@ function scrollScene3(){
   camera.rotation.x = 0;
   camera.rotation.z = 0;
 
-  //console.log('3:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  console.log('3:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function endScene3(){
@@ -164,11 +164,11 @@ function endScene3(){
   camera.rotation.y = Math.PI/2;
   camera.rotation.x = -Math.PI/2;
   camera.rotation.z = Math.PI/2;
-  //console.log('3(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  console.log('3(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function scrollScene4(){
-  //console.log('4:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  console.log('4:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
   //camera.rotateX(-1/50);
   camera.rotation.y = (Math.PI/2)-(window.scrollY-2978)/500;
   camera.position.y = 0;
@@ -177,8 +177,12 @@ function scrollScene4(){
 }
 
 function endScene4(){
+  camera.position.x = global.xdistance;
+  camera.position.z = 70;
+  camera.rotation.x = -Math.PI/2;
+  camera.rotation.z = Math.PI/2;
   camera.rotation.y = 0;
-  console.log('3(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  console.log('4(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function scrollScene5(){
@@ -329,7 +333,10 @@ function ready(){
   // testObject123.rotation.y = Math.PI/8;
   scene.add(planet1);
   scene.add(planet2, planet2ring, planet3);
-  scene5ToRotate.push(planet1, planet2, planet3);
+  scene5ToRotate.push([planet1, 0.005, new THREE.Vector3(0, 1, 0)],
+  [planet2, 0.001, new THREE.Vector3(0, 1, 0)],
+  [planet3, 0.01, new THREE.Vector3(0, 1, 0)], 
+  [planet2ring, 0.001, new THREE.Vector3(0, 0, 1)]);
   
 
   isocahedrons = generateRotatingObjects(Math.max(Math.round(density/15), 30));
@@ -343,7 +350,7 @@ function ready(){
   let start = Date.now();
   
   window.addEventListener('scroll', onScroll, false); 
-  onScroll();
+  onScroll(true);
   if(sceneNum > 2){
     clearScene1Objects();
   }
@@ -366,9 +373,7 @@ function animate(){
         mesh.rotation.z += z;
       });
     }  
-  }else if(sceneNum == 3){
-    
-  }else if(sceneNum == 4){
+  }else if(sceneNum == 3 || sceneNum == 4){
     if(spaceship){
       spaceship.rotation.y += 0.01;
     }
@@ -376,12 +381,12 @@ function animate(){
     // scene5ToRotate.forEach((item) => {
     //   item.rotation.x += 0.005;
     // });
-    scene5ToRotate.forEach((item) => {
-      item.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.005);
+    scene5ToRotate.forEach(([item, speed, rotationalAxis]) => {
+      item.rotateOnAxis(rotationalAxis, speed);
     });
   }else if(sceneNum == 5){
-    scene5ToRotate.forEach((item) => {
-      item.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.005);
+    scene5ToRotate.forEach(([item, speed, rotationalAxis]) => {
+      item.rotateOnAxis(rotationalAxis, speed);
     });
   }
   if(framez == 20){
