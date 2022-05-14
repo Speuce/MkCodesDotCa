@@ -40,6 +40,18 @@ body {
   color: #EFEFEF;
 }
 
+.general a {
+  color: #DEDEDE;
+  font-size: 1.2em;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-decoration: underline;
+  
+}
+
+.smol {
+  font-size: 0.8em;
+}
+
 .general {
   color: #DEDEDE;
 }
