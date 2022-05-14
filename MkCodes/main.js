@@ -264,11 +264,7 @@ function get3DTextGeometry(text, size, width){
     font: global.font,
     size: size,
     height: width,
-    curveSegments: size,
-    bevelThickness: 10,
-    bevelSize: Math.round(size*0.8),
-    bevelOffset: 0,
-    bevelSegments: 5,
+    curveSegments: 2,
   });
   geometry.center();
   return geometry;
