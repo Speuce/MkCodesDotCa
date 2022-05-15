@@ -4,16 +4,16 @@
 }
 
 .hide-navbar{
-    /* opacity: 0;
+    opacity: 0;
     transform: translateY(-50px);
-    transition: 1s all ease; */
+    transition: 1s all ease;
 }
 
 .hide-navbar:hover{
-    /* opacity: 100;
+    opacity: 100;
     top: -50px;
     transform: translateY(0);
-    transition: 0.75s all ease; */
+    transition: 0.75s all ease;
 }
 
 #navbarbg{

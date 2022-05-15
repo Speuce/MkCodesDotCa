@@ -40,7 +40,7 @@ function load(){
 
   const loader2 = new FBXLoader();
   const shipMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
-  loader2.load("./models/ROCKET.fbx", model => {
+  loader2.load("/ROCKET.fbx", model => {
       model.traverse((child) => {
         if(child.isMesh){
           child.material = shipMaterial;
@@ -65,7 +65,7 @@ let titleObject;
 let spaceship;
 let sceneNum = 0;
 function onScroll(endScene = false){
-  console.log("onscroll: " + window.scrollY + ":" + endScene);
+  //console.log("onscroll: " + window.scrollY + ":" + endScene);
   if(window.scrollY < 1200){
     sceneNum=1;
     scrollScene1();
@@ -86,10 +86,10 @@ function onScroll(endScene = false){
         endScene3();
       }
       sceneNum = 4;
-      console.log("scrollY: " + window.scrollY);
+     //console.log("scrollY: " + window.scrollY);
       scrollScene4();
     }else{
-      console.log("endscene: " + (endScene === true))
+      //console.log("endscene: " + (endScene === true))
       if(sceneNum == 4 || endScene === true){
         endScene4();
       }
@@ -156,7 +156,7 @@ function scrollScene3(){
   camera.rotation.x = 0;
   camera.rotation.z = 0;
 
-  console.log('3:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  //console.log('3:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function endScene3(){
@@ -165,16 +165,16 @@ function endScene3(){
   camera.rotation.y = Math.PI/2;
   camera.rotation.x = -Math.PI/2;
   camera.rotation.z = Math.PI/2;
-  console.log('3(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  //console.log('3(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function scrollScene4(){
-  console.log('4:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  //console.log('4:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
   //camera.rotateX(-1/50);
   camera.rotation.y = (Math.PI/2)-(window.scrollY-2978)/500;
   camera.position.y = 0;
-  console.log(camera.rotation.y);
-  console.log(camera.position.x + "::" + camera.position.y + "::" + camera.position.z);
+  //console.log(camera.rotation.y);
+  //console.log(camera.position.x + "::" + camera.position.y + "::" + camera.position.z);
 }
 
 function endScene4(){
@@ -183,11 +183,11 @@ function endScene4(){
   camera.rotation.x = -Math.PI/2;
   camera.rotation.z = Math.PI/2;
   camera.rotation.y = 0;
-  console.log('4(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  //console.log('4(end):' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
 }
 
 function scrollScene5(){
-  console.log('5:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
+  //console.log('5:' + camera.rotation.x + "::" +camera.rotation.y + "::" + camera.rotation.z);
   //camera.rotateX(-1/50);
   // camera.rotation.y = (Math.PI/2)-(window.scrollY-2978)/500;
   // console.log(camera.rotation.y);
@@ -196,7 +196,7 @@ function scrollScene5(){
   // camera.position.z = 70 + (window.scrollY-3763)*0.000019*global.xdistance;
   // camera.position.x = global.xdistance + (window.scrollY-3763)*global.xdistance*0.0000016;
   //camera.rotation.y = 0;
-  console.log(camera.position.x + "::" + camera.position.y + "::" + camera.position.z);
+  //console.log(camera.position.x + "::" + camera.position.y + "::" + camera.position.z);
 }
 
 function generateBinaryFloatingText(number, zoffset, zspread){
