@@ -213,7 +213,7 @@ function generateBinaryFloatingText(number, zoffset, zspread){
 }
 
 
-const rotatingObjectMaterial = new THREE.MeshStandardMaterial({color: 0xF1F1F1});
+const rotatingObjectMaterial = new THREE.MeshStandardMaterial({color: 0xF1F1F1, roughness: 0.70, metalness: 1});
 function generateRotatingObjects(number){
 
   const geometries = [new THREE.IcosahedronBufferGeometry(2), new THREE.IcosahedronBufferGeometry(1.25), new THREE.IcosahedronBufferGeometry(1.5), new THREE.IcosahedronBufferGeometry(1.75)];
@@ -274,7 +274,8 @@ function get3DTextGeometry(text, size, width){
 let isocahedrons;
 function ready(){
   console.log("ready");
-  const textMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
+  // const textMaterial = new THREE.MeshBasicMaterial({color: 0xFFAB45, wireframe: true});
+  const textMaterial = new THREE.MeshStandardMaterial({color: 0xFFAB45, roughness: 0.35, metalness: 0.5});
   scene1ToDim.push(textMaterial);
   scene1ToDim.push(rotatingObjectMaterial);
   mkText = generate3DText('MK', 10, textMaterial);
@@ -404,8 +405,10 @@ function ready(){
 
   isocahedrons = generateRotatingObjects(Math.max(Math.round(density/15), 30));
 
-  const lightSource1 = new THREE.PointLight(0xffffff);
-  lightSource1.position.set(0, 0, 20);
+  // const lightSource1 = new THREE.PointLight(0xffffff, 2.0, 5000.0, 0.001);
+  //const lightSource1 = new THREE.DirectionalLight(0xffffff, 0.5);
+  const lightSource1 = new THREE.SpotLight(0x9f9f9f, 2.5, 0, Math.PI/3, 0.9);
+  lightSource1.position.set(0, 7, 50);
   scene.add(lightSource1);
   
   let lastFps = 0;
