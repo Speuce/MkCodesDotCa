@@ -24,11 +24,19 @@ const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#mainc'),
 });
 
+function onWindowResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
 function setup(){
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   camera.position.setZ(50);
   renderer.render(scene, camera);
+  window.addEventListener( 'resize', onWindowResize, false );
 }
 
 function load(){
