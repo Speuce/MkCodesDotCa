@@ -201,7 +201,7 @@ function scrollScene5(){
 
 function generateBinaryFloatingText(number, zoffset, zspread){
   const materials = [new THREE.MeshBasicMaterial({color: 0x2A8542}), new THREE.MeshBasicMaterial({color: 0xBBBBBB})];
-  const geometries = [get3DTextGeometry('1', 6, 0.7), get3DTextGeometry('0', 6, 0.7)];
+  const geometries = [get3DTextGeometry('1', 6, 0.7, false), get3DTextGeometry('0', 6, 0.7, false)];
   const spread = global.constrainingDimension;
   const rotationSpread = 0.01;
   let mesh;
@@ -213,7 +213,7 @@ function generateBinaryFloatingText(number, zoffset, zspread){
 }
 
 
-const rotatingObjectMaterial = new THREE.MeshStandardMaterial({color: 0xF1F1F1, roughness: 0.70, metalness: 1});
+const rotatingObjectMaterial = new THREE.MeshStandardMaterial({color: 0xFFFFFF, roughness: 0.75, metalness: 1});
 function generateRotatingObjects(number){
 
   const geometries = [new THREE.IcosahedronBufferGeometry(2), new THREE.IcosahedronBufferGeometry(1.25), new THREE.IcosahedronBufferGeometry(1.5), new THREE.IcosahedronBufferGeometry(1.75)];
@@ -258,13 +258,19 @@ function generate3DText(text, size, material){
   return new THREE.Mesh(get3DTextGeometry(text, size), material);
 }
 
-function get3DTextGeometry(text, size, width){
-  if (width === undefined) width = Math.min(3, Math.round(size/2));
+function get3DTextGeometry(text, size, width, bevel){
+  if (width === undefined) width = 1.5;
+  if (bevel === undefined) bevel = true;
   const geometry = new TextGeometry(text, {
     font: global.font,
     size: size,
     height: width,
-    curveSegments: 2,
+    curveSegments: 6,
+    bevelEnabled: bevel,
+		bevelThickness: 0.5,
+		bevelSize: 0.3,
+		bevelOffset: 0,
+		bevelSegments: 5,
   });
   geometry.center();
   return geometry;
@@ -407,7 +413,7 @@ function ready(){
 
   // const lightSource1 = new THREE.PointLight(0xffffff, 2.0, 5000.0, 0.001);
   //const lightSource1 = new THREE.DirectionalLight(0xffffff, 0.5);
-  const lightSource1 = new THREE.SpotLight(0x9f9f9f, 2.5, 0, Math.PI/3, 0.9);
+  const lightSource1 = new THREE.SpotLight(0x9f9f9f, 2.5, 0, Math.PI/2, 0.9);
   lightSource1.position.set(0, 7, 50);
   scene.add(lightSource1);
   
