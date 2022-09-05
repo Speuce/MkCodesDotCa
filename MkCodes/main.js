@@ -273,7 +273,7 @@ function get3DTextGeometry(text, size, width, bevel){
     font: global.font,
     size: size,
     height: width,
-    curveSegments: 6,
+    curveSegments: 2,
     bevelEnabled: bevel,
 		bevelThickness: 0.5,
 		bevelSize: 0.3,
