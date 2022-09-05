@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="icon" href="favicon.ico" />
     <link rel="stylesheet" href="/css/overlay-styles.css"/>
     <link rel="stylesheet" href="/css/navbar-styles.css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,8 +20,8 @@
               <a href="#projects">Projects</a>
               <div class="dropdown-content">
                 <a href="#project1">Traffic Accident Data Explorer</a>
-                <a href="#project2">Productive</a>
-                <a href="#project3">Food Service UI</a>
+                <a href="#project2">Fitness App</a>
+                <a href="#project3">Productive</a>
                 <a href="#project4">GAN Experiment</a>
               </div>
             </div>
@@ -78,7 +78,10 @@
               href="https://drive.google.com/uc?export=download&id=1_sr4McyNaWGND7c_eYvNZdcGqe6PCu6x" >paper</a>) 
               <!-- — Explore association rules discovered by applying multidimensional quantitative association rule mining to UK traffic accident data. -->
               <br><br>
-              <a href="#project2" >Productive</a> 
+              <a href="#project2" target="_blank" >Fitness App</a> 
+              — A Flutter IOS app built for a freelance job, featuring a Firebase Backend.
+              <br><br>
+              <a href="https://github.com/Speuce/Productive/tree/develop">Productive</a> 
               (<a style="font-size: 1em;" target="_blank" 
               href="https://github.com/Speuce/Productive/tree/develop" >source</a>) 
               — An neatly-engineering Android app for tracking tasks, and collecting virtual items for their completion.
@@ -110,43 +113,33 @@
           <div class="text3 general">
             <h1><a style="font-size:0.9em" href="/dataexplorer/">Traffic Accident Data Explorer</a></h1>
             <p>Using a data mining technique, known as multidimensional multilevel quantitative association 
-              rule mining on a publicly available dataset of all UK Traffic incidents from 1979-2020, 
+              rule mining on a public dataset of UK Traffic incidents from 1979-2020, 
               we (a group of 4) generated over 27,000 association rules. The implementation of the
                multidimensional multilevel quantitative association rule mining algorithm was done
                 in <i>Python</i> using <i>Numpy</i>. Separately, I created web-based explorer tool 
                 using <i>Angular</i> to help us search through the association rules and find ones that
-                 we thought were interesting or insightful. Through this, we were able to come up with some
-                 interesting statistical results. For example, in our data set, of all the nighttime accidents 
+                 we thought were interesting or insightful. Through this, we were able to locate some
+                 interesting results. For example, in our data set, of all the night time accidents 
                  that are fatal, 87% of the time the driver was male.
               </p>
+              <p>The associated paper was awarded Best Paper in the 2022 IEEE IRI Conference, and 
+                will be published in the next edition of the conference proceedings.</p>
           </div>
         </div>
         <div id="project2" style="height: 850px; max-height: 900px; overflow: hidden;">
           <div class="navbuffer"></div>
           <div class="text3 general">
-            <h1>Productive</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc augue felis,
-               bibendum tincidunt metus feugiat, hendrerit convallis metus. Cras sodales, 
-               lacus bibendum tincidunt luctus, mauris velit sagittis nisl, eget pulvinar 
-               lorem orci in lorem. Praesent tristique augue et venenatis porta. Donec 
-               maximus semper risus, sed efficitur arcu finibus eu. Etiam lacinia volutpat 
-               consequat. Nulla fringilla nulla a justo accumsan condimentum. In nisi massa,
-                aliquam eget orci in, tempor placerat lectus. Pellentesque bibendum eros nec
-                 nisl bibendum, nec blandit tellus tempus.
-              <br><br>
-              Donec eu pretium nisl, in cursus sem. Pellentesque mattis gravida magna at ultrices. Mauris dictum elit ornare sem consectetur venenatis. Phasellus rhoncus est augue, a eleifend urna dictum vitae. Fusce pharetra mi non volutpat egestas. Pellentesque porta orci a dolor varius, quis ullamcorper augue eleifend. Praesent vitae scelerisque magna, at efficitur purus. Aenean id lacus eros. Praesent eu dui quam.
+            <h1>Fitness App</h1>
+            <p>Built as part of a freelancing job, the IOS fitness plan app allows users to view various fitness plans, track their progress with their account and watch tutorial videos as they complete the exercises. It was built using Flutter for the frontend and Firebase in the backend. Release to the app store is coming shortly.
               </p>
-          </div>
+            </div>
         </div>
         
         <div id="project3" style="height: 850px; max-height: 900px; overflow: hidden;">
           <div class="navbuffer"></div>
           <div class="text4 general">
-            <h1>Meal Ordering Service UI</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc augue felis, bibendum tincidunt metus feugiat, hendrerit convallis metus. Cras sodales, lacus bibendum tincidunt luctus, mauris velit sagittis nisl, eget pulvinar lorem orci in lorem. Praesent tristique augue et venenatis porta. Donec maximus semper risus, sed efficitur arcu finibus eu. Etiam lacinia volutpat consequat. Nulla fringilla nulla a justo accumsan condimentum. In nisi massa, aliquam eget orci in, tempor placerat lectus. Pellentesque bibendum eros nec nisl bibendum, nec blandit tellus tempus.
-              <br><br>
-              Donec eu pretium nisl, in cursus sem. Pellentesque mattis gravida magna at ultrices. Mauris dictum elit ornare sem consectetur venenatis. Phasellus rhoncus est augue, a eleifend urna dictum vitae. Fusce pharetra mi non volutpat egestas. Pellentesque porta orci a dolor varius, quis ullamcorper augue eleifend. Praesent vitae scelerisque magna, at efficitur purus. Aenean id lacus eros. Praesent eu dui quam.
-              
+            <h1>Productive</h1>
+            <p>Productive is essentially a gamified task tracker, kind of like Trello. It was built in a group of 5 for a software engineering course, thus, clean code and project organization was at the forefront of this project.  We utilized a 4-tier architecture for the project; I managed most of the backend. The Android-based app used an ORM library to remove the need for database boilerplate code, and included a large number of unit, system, and integration tests, resulting in about 85% code coverage of the project.
               </p>
           </div>
         </div>
@@ -155,9 +148,9 @@
           <div class="navbuffer"></div>
           <div class="text3 general">
             <h1>An Experiement with GANs</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc augue felis, bibendum tincidunt metus feugiat, hendrerit convallis metus. Cras sodales, lacus bibendum tincidunt luctus, mauris velit sagittis nisl, eget pulvinar lorem orci in lorem. Praesent tristique augue et venenatis porta. Donec maximus semper risus, sed efficitur arcu finibus eu. Etiam lacinia volutpat consequat. Nulla fringilla nulla a justo accumsan condimentum. In nisi massa, aliquam eget orci in, tempor placerat lectus. Pellentesque bibendum eros nec nisl bibendum, nec blandit tellus tempus.
-              <br><br>
-              Donec eu pretium nisl, in cursus sem. Pellentesque mattis gravida magna at ultrices. Mauris dictum elit ornare sem consectetur venenatis. Phasellus rhoncus est augue, a eleifend urna dictum vitae. Fusce pharetra mi non volutpat egestas. Pellentesque porta orci a dolor varius, quis ullamcorper augue eleifend. Praesent vitae scelerisque magna, at efficitur purus. Aenean id lacus eros. Praesent eu dui quam.
+            <p>This research paper covers the relatively new neural network variation known as a GAN. It introduces the concept of a GAN in a somewhat simple manner, compares it to a classic neural net, and outlines an experiment that was performed in order to test different variations of training data. 
+              <br>  
+              I edited an existing GAN implementation so that the training ratio of positive to negative samples could be varied. This gave me my first real experience working with PyTorch, and enriched my machine learning knowledge as a whole. It was originally written for a course project, and was not submitted for publication.
               
               </p>
           </div>
